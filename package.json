@@ -1,5 +1,5 @@
 {
-  "name": "trading-agent",
+  "name": "tiny-agent",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "clean": "rimraf dist",
     "start": "node --loader ts-node/esm ./src/index.ts",
     "dev": "nodemon",
-    "build": "tsc"
+    "build": "pnpm clean && esbuild src/index.ts --bundle --platform=node --outdir=dist --format=esm --packages=external"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.9.3",
     "@types/pg": "^8.11.10",
+    "esbuild": "^0.24.0",
     "nodemon": "^3.1.7",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
