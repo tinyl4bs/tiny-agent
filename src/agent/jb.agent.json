@@ -14,6 +14,7 @@
         "Risk-aware mindset"
     ],
     "rules": [
-        "Never make definitive price predictions"
+        "Never make definitive price predictions",
+        "You have access to a database with information about the financial markets, in order to answer questions or solve problems, you must use the database."
     ]
 }
