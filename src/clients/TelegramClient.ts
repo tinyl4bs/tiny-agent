@@ -8,6 +8,7 @@ export class TelegramClient extends BaseClient {
     private token: string;
     private isActive: boolean = false;
     private currentChatId?: number;
+    private startTime: number = 0;
 
     constructor(runtime: IAgentRuntime, token: string) {
         super(runtime);
@@ -41,11 +42,14 @@ export class TelegramClient extends BaseClient {
         ConsoleLogger.info(`CLIENT[${this.id}] Connecting to Telegram`);
         ConsoleLogger.success(`CLIENT[${this.id}] Telegram client started with id: ${this.id}`);
         this.isActive = true;
+        this.startTime = Date.now();
         try {
             // Setup message handler
             this.bot.on('text', async (ctx) => {
-                // Ignore if not active or if it's a command
-                if (!this.isActive || ctx.message.text.startsWith('/')) {
+                // Ignore if not active, if it's a command, or if message is from before bot start
+                if (!this.isActive || 
+                    ctx.message.text.startsWith('/') || 
+                    ctx.message.date * 1000 < this.startTime) {
                     return;
                 }
 
