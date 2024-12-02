@@ -25,6 +25,8 @@ pool.connect((err, client, release) => {
     ConsoleLogger.success('Connected to PostgreSQL database');
 });
 
+const DATABASE_TIMEOUT = 10000;
+
 export const databaseTool: ITool = {
     name: 'DATABASE',
     description: 'Use the database to retrieve information using SQL queries',
@@ -45,7 +47,13 @@ export const databaseTool: ITool = {
             // test the connection
             await pool.connect();
 
-            const result = await pool.query(query);
+            const result = await Promise.race([
+                pool.query(query),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout: Database query took too long')), DATABASE_TIMEOUT))
+            ]) as pkg.QueryResult;
+            if (result instanceof Error) {
+                return result.message;
+            }
             return JSON.stringify(result.rows);
         } catch (error) {
             if (error instanceof Error) {
