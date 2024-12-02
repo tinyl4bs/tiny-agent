@@ -33,7 +33,7 @@ export const databaseProvider: IProvider = {
             // Get database structure
             const result = await Promise.race([
                 databaseTool.execute(SCHEMA_QUERY),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout: Database query took too long')), 5000))
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout: Database query took too long')), 10000))
             ]);
             
             // Parse the result
