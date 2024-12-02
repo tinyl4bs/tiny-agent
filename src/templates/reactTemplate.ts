@@ -81,7 +81,7 @@ ${reactExamples}
 # Message history:
 {{messageHistory}}
 
-# TASK: Produce the next Thought/Action cycle for the following question/problem context:
+# TASK: Produce the next Thought/Action cycle for the following question/problem context, do not get stuck in a infinite loop:
 {{scratchpad}}
 
 # IMPORTANT: The result should be outputted in a JSON block, with the following format:
