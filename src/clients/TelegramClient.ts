@@ -9,6 +9,11 @@ export class TelegramClient extends BaseClient {
     private isActive: boolean = false;
     private currentChatId?: number;
     private startTime: number = 0;
+    private messageBuffer: Map<number, {
+        messages: string[];
+        timer: NodeJS.Timeout | null;
+    }> = new Map();
+    private readonly BUFFER_TIMEOUT = 3000; // 3 seconds window to combine messages
 
     constructor(runtime: IAgentRuntime, token: string) {
         super(runtime);
@@ -55,18 +60,10 @@ export class TelegramClient extends BaseClient {
 
                 try {
                     const message = ctx.message.text;
+                    const chatId = ctx.chat.id;
                     
-                    // Show initial typing indicator
-                    await this.showTyping(ctx);
-                    
-                    // Handle the message using BaseClient implementation with continuous typing indicator
-                    await this.showTypingUntilResponse(ctx, this.handleMessage(message));
-                    
-                    // Get the final answer from state
-                    const state = this.runtime.getState();
-                    if (state.finalAnswer) {
-                        await ctx.reply(state.finalAnswer);
-                    }
+                    // Handle message through buffer system
+                    await this.handleMessageBuffer(chatId, message);
                 } catch (error) {
                     ConsoleLogger.error(`CLIENT[${this.id}] Error handling message: ${error}`);
                     await ctx.reply('Sorry, I encountered an error processing your request.');
@@ -111,5 +108,58 @@ export class TelegramClient extends BaseClient {
             content: message,
             timestamp: new Date()
         });
+    }
+
+    private async handleMessageBuffer(chatId: number, message: string): Promise<void> {
+        let buffer = this.messageBuffer.get(chatId);
+        
+        // Create new buffer if none exists
+        if (!buffer) {
+            buffer = {
+                messages: [],
+                timer: null
+            };
+            this.messageBuffer.set(chatId, buffer);
+        }
+        
+        // Add message to buffer
+        buffer.messages.push(message);
+        
+        // Clear existing timer if any
+        if (buffer.timer) {
+            clearTimeout(buffer.timer);
+        }
+        
+        // Set new timer
+        buffer.timer = setTimeout(async () => {
+            const messages = buffer.messages;
+            this.messageBuffer.delete(chatId);
+            
+            // Combine all messages with newlines
+            const combinedMessage = messages.join('\n');
+            
+            try {
+                // Show initial typing indicator
+                await this.showTyping({ chat: { id: chatId } } as Context);
+                
+                // Handle the combined messages
+                await this.showTypingUntilResponse(
+                    { chat: { id: chatId } } as Context, 
+                    this.handleMessage(combinedMessage)
+                );
+                
+                // Get the final answer from state
+                const state = this.runtime.getState();
+                if (state.finalAnswer) {
+                    await this.bot.telegram.sendMessage(chatId, state.finalAnswer);
+                }
+            } catch (error) {
+                ConsoleLogger.error(`CLIENT[${this.id}] Error handling buffered messages: ${error}`);
+                await this.bot.telegram.sendMessage(
+                    chatId, 
+                    'Sorry, I encountered an error processing your request.'
+                );
+            }
+        }, this.BUFFER_TIMEOUT);
     }
 }
