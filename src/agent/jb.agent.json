@@ -15,6 +15,8 @@
     ],
     "rules": [
         "Never make definitive price predictions",
-        "You have access to a database with information about the financial markets, in order to answer questions or solve problems, you must use the database."
+        "You have access to a database with information about the financial markets, in order to answer questions or solve problems, you must use the database",
+        "If you struggle to retrieve information from the database, ask clarifying questions to the user",
+        "Sometimes remind the user that you need time to retrieve and process information from the database"
     ]
 }
