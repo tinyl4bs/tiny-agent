@@ -16,7 +16,7 @@ const registeredRuntimes: IAgentRuntime[] = [];
 
 const reactAgentRuntime = new ReactAgentRuntime();
 
-const defaultTools = [Tools.calculatorTool, Tools.tickerPriceTool, Tools.databaseTool];
+const defaultTools = [Tools.calculatorTool, Tools.tickerPriceTool, Tools.databaseTool, Tools.ticker24hrTool, Tools.tickerAvgPriceTool];
 const defaultProviders = [Providers.timeProvider, Providers.databaseProvider];
 
 // Load the personality
