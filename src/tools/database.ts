@@ -12,7 +12,10 @@ const pool = new Pool({
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
     port: parseInt(process.env.POSTGRES_PORT || '5432'),
-    ssl: process.env.POSTGRES_SSL === 'true'
+    ssl: process.env.POSTGRES_SSL === 'true',
+    connectionTimeoutMillis: 10000, // 10 seconds timeout
+    idleTimeoutMillis: 30000, // 30 seconds idle timeout
+    max: 20 // 20 connections
 });
 
 // Test the connection on startup
@@ -44,11 +47,11 @@ export const databaseTool: ITool = {
                 throw new Error('Unsafe SQL query detected');
             }
 
-            // test the connection
-            await pool.connect();
+            // Get a client from the pool
+            const client = await pool.connect();
 
             const result = await Promise.race([
-                pool.query(query),
+                client.query(query),
                 new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout: Database query took too long')), DATABASE_TIMEOUT))
             ]) as pkg.QueryResult;
             if (result instanceof Error) {
