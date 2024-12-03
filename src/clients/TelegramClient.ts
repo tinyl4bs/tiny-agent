@@ -13,7 +13,7 @@ export class TelegramClient extends BaseClient {
         messages: string[];
         timer: NodeJS.Timeout | null;
     }> = new Map();
-    private readonly BUFFER_TIMEOUT = 3000; // 3 seconds window to combine messages
+    private readonly BUFFER_TIMEOUT = 5000; // 5 seconds window to combine messages
 
     constructor(runtime: IAgentRuntime, token: string) {
         super(runtime);
