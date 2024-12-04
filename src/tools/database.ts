@@ -29,6 +29,7 @@ pool.connect((err, client, release) => {
 });
 
 const DATABASE_TIMEOUT = 10000;
+const MAX_RESPONSE_LENGTH = 10000; // 10000 characters
 
 export const databaseTool: ITool = {
     name: 'DATABASE',
@@ -54,10 +55,21 @@ export const databaseTool: ITool = {
                 client.query(query),
                 new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout: Database query took too long')), DATABASE_TIMEOUT))
             ]) as pkg.QueryResult;
+
+            client.release();
+
             if (result instanceof Error) {
                 return result.message;
             }
-            return JSON.stringify(result.rows);
+            
+            const jsonResult = JSON.stringify(result.rows);
+
+            // Check if the result is too long
+            if (jsonResult.length > MAX_RESPONSE_LENGTH) {
+                return `Query result is too large (${jsonResult.length} characters). Please refine your query.`;
+            }
+
+            return jsonResult;
         } catch (error) {
             if (error instanceof Error) {
                 ConsoleLogger.error(`Database query error: ${error.message}`);
