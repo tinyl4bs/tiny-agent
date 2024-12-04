@@ -110,12 +110,15 @@ export class ReactAgentRuntime implements IAgentRuntime {
             this.state.scratchpad = `${this.state.scratchpad}\nAction: ${parsedResponse.action}[${parsedResponse.actionInput}]`;
             const tool = this.tools.find(tool => tool.name === parsedResponse.action);
             if (!tool) {
-                throw new Error(`Tool ${parsedResponse.action} not found`);
+                ConsoleLogger.error(`Tool ${parsedResponse.action} not found`);
+                this.state.scratchpad = `${this.state.scratchpad}\nObservation: Tool ${parsedResponse.action} not found`;
             }
-            ConsoleLogger.debug(`Executing tool: ${tool.name}[${parsedResponse.actionInput}]`);
-            const result = await tool.execute(parsedResponse.actionInput);
-            ConsoleLogger.debug(`Tool result: ${result}`);
-            this.state.scratchpad = `${this.state.scratchpad}\nObservation: ${result}`;
+            else {
+                ConsoleLogger.debug(`Executing tool: ${tool.name}[${parsedResponse.actionInput}]`);
+                const result = await tool.execute(parsedResponse.actionInput);
+                ConsoleLogger.debug(`Tool result: ${result}`);
+                this.state.scratchpad = `${this.state.scratchpad}\nObservation: ${result}`;
+            }
         }
 
         if (parsedResponse.finalAnswer) {
