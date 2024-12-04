@@ -29,7 +29,7 @@ pool.connect((err, client, release) => {
 });
 
 const DATABASE_TIMEOUT = 10000;
-const MAX_RESPONSE_LENGTH = 10000; // 10000 characters
+const MAX_RESPONSE_LENGTH = 50000; // 50000 characters
 
 export const databaseTool: ITool = {
     name: 'DATABASE',
@@ -66,6 +66,7 @@ export const databaseTool: ITool = {
 
             // Check if the result is too long
             if (jsonResult.length > MAX_RESPONSE_LENGTH) {
+                ConsoleLogger.warn(`Database query result is too large (${jsonResult.length} characters). It will not be injected into context.`);
                 return `Query result is too large (${jsonResult.length} characters). Please refine your query.`;
             }
 
