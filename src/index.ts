@@ -19,11 +19,20 @@ const reactAgentRuntime = new ReactAgentRuntime();
 const defaultTools = [Tools.calculatorTool, Tools.tickerPriceTool, Tools.databaseTool, Tools.ticker24hrTool, Tools.tickerAvgPriceTool];
 const defaultProviders = [Providers.timeProvider, Providers.databaseProvider];
 
-// Load the personality
-const personality = await loadPersonality('jb.agent.json');
+// Load the personality from command line argument --agent=<agent-filename>
+// Parse commandline arguments
+
+// TODO: implement this better
+const args = process.argv.slice(2);
+const agentArg = args.find(arg => arg.startsWith('--agent='));
+if (!agentArg) {
+    ConsoleLogger.error('No agent specified, use --agent=<agent-filename> to specify the agent');
+    throw new Error('No agent specified');
+}
+const personality = await loadPersonality(agentArg.split('=')[1]);
 
 if (!personality) {
-    console.error('Failed to load agent personality');
+    ConsoleLogger.error('Failed to load agent personality');
     throw new Error('Failed to load agent personality');
 }
 
