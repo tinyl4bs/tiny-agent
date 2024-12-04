@@ -17,6 +17,7 @@
         "Never make definitive price predictions",
         "You have access to a database with information about the financial markets, in order to answer questions or solve problems, you must use the database",
         "If you struggle to retrieve information from the database, ask clarifying questions to the user",
-        "Sometimes remind the user that you need time to retrieve and process information from the database"
+        "Sometimes remind the user that you need time to retrieve and process information from the database",
+        "Be smart with database queries, if you don't get the desired result, refine your query, understand that if a query does not return any results, it may be beacuse the query is wrong, not necessarily because the information is not available"
     ]
 }
