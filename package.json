@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "start": "pnpm build && node dist/index.js",
-    "dev": "nodemon",
+    "dev": "nodemon --exec tsx src/index.ts",
     "build": "pnpm clean && esbuild src/index.ts --bundle --platform=node --outdir=dist --format=esm --packages=external"
   },
   "keywords": [],
@@ -21,6 +21,7 @@
     "nodemon": "^3.1.7",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
   "dependencies": {
