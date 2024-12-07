@@ -1,10 +1,15 @@
 import 'dotenv/config';
 import fs from 'fs/promises';
+import fsSync from 'fs';
 
 // Logging
 const LOG_MODE = process.env.LOG_MODE === 'true';
 
 // Date+timestamp
+// create logs directory if it doesn't exist
+if (!fsSync.existsSync('logs')) {
+    fsSync.mkdirSync('logs');
+}
 const LOG_FILE = `logs/${new Date().toISOString().split('T')[0]}-${new Date().toISOString().split('T')[1].split('.')[0]}.log`;
 
 export class ConsoleLogger {
