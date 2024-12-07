@@ -1,6 +1,6 @@
 import { buildContext, formatMessageHistory, formatPersonality, formatTools, formatToolsList } from './context.ts';
 import { LLMModel } from './llm-engine.ts';
-import { ReactAgentRuntime } from './runtime.ts';
+import { ReactAgentRuntime } from './runtimes/reactRuntime.ts';
 import * as Tools from './tools/index.ts';
 import * as Providers from './providers/index.ts';
 import { RestApiClient } from './clients/RestApiClient.ts';

@@ -1,12 +1,12 @@
 // Agent runtime
 
 import { UUID } from 'crypto';
-import { buildContext, formatMessageHistory, formatProviders } from './context.ts';
-import { LLMEngine } from './llm-engine.ts';
-import { parseJSONBlock } from './parsing.ts';
-import * as Templates from './templates/index.ts';
-import { ITool, State, IAgentRuntime, IProvider, IClient, Message } from './types.ts';
-import { ConsoleLogger } from './console.ts';
+import { buildContext, formatMessageHistory, formatProviders } from '../context.ts';
+import { LLMEngine } from '../llm-engine.ts';
+import { parseJSONBlock } from '../parsing.ts';
+import * as Templates from '../templates/index.ts';
+import { ITool, State, IAgentRuntime, IProvider, IClient, Message } from '../types.ts';
+import { ConsoleLogger } from '../console.ts';
 
 const MAX_STEPS = parseInt(process.env.MAX_STEPS || '20');
 
