@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf dist",
-    "start": "node --loader ts-node/esm ./src/index.ts",
+    "start": "pnpm build && node dist/index.js",
     "dev": "nodemon",
     "build": "pnpm clean && esbuild src/index.ts --bundle --platform=node --outdir=dist --format=esm --packages=external"
   },
